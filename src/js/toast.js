@@ -1,9 +1,9 @@
-import show from './show';
-import animations from './animations';
-const uuid = require('shortid');
+import show from "./show";
+import animations from "./animations";
+const uuid = require("shortid");
 
 // add Object.assign Polyfill
-require('es6-object-assign').polyfill();
+require("es6-object-assign").polyfill();
 
 /**
  * Toast
@@ -13,165 +13,155 @@ require('es6-object-assign').polyfill();
  * @returns {Toasted}
  * @constructor
  */
-export const Toasted = function (_options) {
+export const Toasted = function(_options) {
+  /**
+   * Unique id of the toast
+   */
+  this.id = uuid.generate();
 
-	/**
-	 * Unique id of the toast
-	 */
-	this.id = uuid.generate();
+  /**
+   * Shared Options of the Toast
+   */
+  this.options = _options;
 
-	/**
-	 * Shared Options of the Toast
-	 */
-	this.options = _options;
+  /**
+   * Cached Options of the Toast
+   */
+  this.cached_options = {};
 
+  /**
+   * Shared Toasts list
+   */
+  this.global = {};
 
-	/**
-	 * Cached Options of the Toast
-	 */
-	this.cached_options = {};
+  /**
+   * All Registered Groups
+   */
+  this.groups = [];
 
+  /**
+   * All Registered Toasts
+   */
+  this.toasts = [];
 
-	/**
-	 * Shared Toasts list
-	 */
-	this.global = {};
+  /**
+   * Initiate custom toasts
+   */
+  initiateCustomToasts(this);
 
+  /**
+   * Create New Group of Toasts
+   *
+   * @param o
+   */
+  this.group = o => {
+    if (!o) o = {};
 
-	/**
-	 * All Registered Groups
-	 */
-	this.groups = [];
+    if (!o.globalToasts) {
+      o.globalToasts = {};
+    }
 
-	/**
-	 * All Registered Toasts
-	 */
-	this.toasts = [];
+    // share parents global toasts
+    Object.assign(o.globalToasts, this.global);
 
-	/**
-	 * Initiate custom toasts
-	 */
-	initiateCustomToasts(this);
+    // tell parent about the group
+    let group = new Toasted(o);
+    this.groups.push(group);
 
+    return group;
+  };
 
-	/**
-	 * Create New Group of Toasts
-	 *
-	 * @param o
-	 */
-	this.group = (o) => {
+  /**
+   * Register a Global Toast
+   *
+   * @param name
+   * @param payload
+   * @param options
+   */
+  this.register = (name, payload, options) => {
+    options = options || {};
+    return register(this, name, payload, options);
+  };
 
-		if (!o) o = {};
+  /**
+   * Show a Simple Toast
+   *
+   * @param message
+   * @param options
+   * @returns {*}
+   */
+  this.show = (message, options) => {
+    return _show(this, message, options);
+  };
 
-		if (!o.globalToasts) {
-			o.globalToasts = {};
-		}
+  /**
+   * Show a Toast with Success Style
+   *
+   * @param message
+   * @param options
+   * @returns {*}
+   */
+  this.success = (message, options) => {
+    options = Object.assign({}, this.options["success"], options, {
+      type: "success"
+    });
+    return _show(this, message, options);
+  };
 
-		// share parents global toasts
-		Object.assign(o.globalToasts, this.global);
+  /**
+   * Show a Toast with Info Style
+   *
+   * @param message
+   * @param options
+   * @returns {*}
+   */
+  this.info = (message, options) => {
+    options = Object.assign({}, this.options["info"], options, {
+      type: "info"
+    });
+    return _show(this, message, options);
+  };
 
-		// tell parent about the group
-		let group = new Toasted(o);
-		this.groups.push(group);
+  /**
+   * Show a Toast with Error Style
+   *
+   * @param message
+   * @param options
+   * @returns {*}
+   */
+  this.error = (message, options) => {
+    options = Object.assign({}, this.options["error"], options, {
+      type: "error"
+    });
+    return _show(this, message, options);
+  };
 
-		return group;
-	}
+  /**
+   * Remove a Toast
+   * @param el
+   */
+  this.remove = el => {
+    this.toasts = this.toasts.filter(t => {
+      return t.el.hash !== el.hash;
+    });
+    if (el.parentNode) el.parentNode.removeChild(el);
+  };
 
+  /**
+   * Clear All Toasts
+   *
+   * @returns {boolean}
+   */
+  this.clear = onClear => {
+    animations.clearAnimation(this.toasts, () => {
+      onClear && onClear();
+    });
+    this.toasts = [];
 
-	/**
-	 * Register a Global Toast
-	 *
-	 * @param name
-	 * @param payload
-	 * @param options
-	 */
-	this.register = (name, payload, options) => {
-		options = options || {};
-		return register(this, name, payload, options);
-	}
+    return true;
+  };
 
-
-	/**
-	 * Show a Simple Toast
-	 *
-	 * @param message
-	 * @param options
-	 * @returns {*}
-	 */
-	this.show = (message, options) => {
-		return _show(this, message, options);
-	}
-
-
-	/**
-	 * Show a Toast with Success Style
-	 *
-	 * @param message
-	 * @param options
-	 * @returns {*}
-	 */
-	this.success = (message, options) => {
-		options = options || {};
-		options.type = "success";
-		return _show(this, message, options);
-	}
-
-
-	/**
-	 * Show a Toast with Info Style
-	 *
-	 * @param message
-	 * @param options
-	 * @returns {*}
-	 */
-	this.info = (message, options) => {
-		options = options || {};
-		options.type = "info";
-		return _show(this, message, options);
-	}
-
-
-	/**
-	 * Show a Toast with Error Style
-	 *
-	 * @param message
-	 * @param options
-	 * @returns {*}
-	 */
-	this.error = (message, options) => {
-		options = options || {};
-		options.type = "error";
-		return _show(this, message, options);
-	}
-
-
-	/**
-	 * Remove a Toast
-	 * @param el
-	 */
-	this.remove = (el) => {
-		this.toasts = this.toasts.filter((t) => {
-			return t.el.hash !== el.hash;
-		})
-		if (el.parentNode) el.parentNode.removeChild(el);
-	}
-
-
-	/**
-	 * Clear All Toasts
-	 *
-	 * @returns {boolean}
-	 */
-	this.clear = (onClear) => {
-		animations.clearAnimation(this.toasts, () => {
-			onClear && onClear();
-		});
-		this.toasts = [];
-
-		return true;
-	}
-
-	return this;
+  return this;
 };
 
 /**
@@ -183,92 +173,83 @@ export const Toasted = function (_options) {
  * @returns {*}
  * @private
  */
-export const _show = function (instance, message, options) {
-	options = options || {};
-	let toast = null;
+export const _show = function(instance, message, options) {
+  options = options || {};
+  let toast = null;
 
-	if (typeof options !== "object") {
-		console.error("Options should be a type of object. given : " + options);
-		return null;
-	}
+  if (typeof options !== "object") {
+    console.error("Options should be a type of object. given : " + options);
+    return null;
+  }
 
-	// singleton feature
-	if(instance.options.singleton && instance.toasts.length > 0) {
-		instance.cached_options = options;
-		instance.toasts[instance.toasts.length - 1].goAway(0);
-	}
+  // singleton feature
+  if (instance.options.singleton && instance.toasts.length > 0) {
+    instance.cached_options = options;
+    instance.toasts[instance.toasts.length - 1].goAway(0);
+  }
 
-	// clone the global options
-	let _options = Object.assign({}, instance.options);
+  // clone the global options
+  let _options = Object.assign({}, instance.options);
 
-	// merge the cached global options with options
-	Object.assign(_options, options);
+  // merge the cached global options with options
+  Object.assign(_options, options);
 
-	toast = show(instance, message, _options);
-	instance.toasts.push(toast);
+  toast = show(instance, message, _options);
+  instance.toasts.push(toast);
 
-	return toast;
+  return toast;
 };
 
 /**
  * Register the Custom Toasts
  */
-export const initiateCustomToasts = function (instance) {
+export const initiateCustomToasts = function(instance) {
+  let customToasts = instance.options.globalToasts;
 
-	let customToasts = instance.options.globalToasts;
+  // this will initiate toast for the custom toast.
+  let initiate = (message, options) => {
+    // check if passed option is a available method if so call it.
+    if (typeof options === "string" && instance[options]) {
+      return instance[options].apply(instance, [message, {}]);
+    }
 
-	// this will initiate toast for the custom toast.
-	let initiate = (message, options) => {
+    // or else create a new toast with passed options.
+    return _show(instance, message, options);
+  };
 
-		// check if passed option is a available method if so call it.
-		if (typeof(options) === 'string' && instance[options]) {
-			return instance[options].apply(instance, [message, {}]);
-		}
+  if (customToasts) {
+    instance.global = {};
 
-		// or else create a new toast with passed options.
-		return _show(instance, message, options);
-	};
-
-	if (customToasts) {
-
-		instance.global = {};
-
-		Object.keys(customToasts).forEach(key => {
-
-			// register the custom toast events to the Toast.custom property
-			instance.global[key] = (payload = {}) => {
-
-				//console.log(payload);
-				// return the it in order to expose the Toast methods
-				return customToasts[key].apply(null, [payload, initiate]);
-			};
-		});
-
-	}
+    Object.keys(customToasts).forEach(key => {
+      // register the custom toast events to the Toast.custom property
+      instance.global[key] = (payload = {}) => {
+        //console.log(payload);
+        // return the it in order to expose the Toast methods
+        return customToasts[key].apply(null, [payload, initiate]);
+      };
+    });
+  }
 };
 
-const register = function (instance, name, callback, options) {
+const register = function(instance, name, callback, options) {
+  !instance.options.globalToasts ? (instance.options.globalToasts = {}) : null;
 
-	(!instance.options.globalToasts) ? instance.options.globalToasts = {} : null;
+  instance.options.globalToasts[name] = function(payload, initiate) {
+    // if call back is string we will keep it that way..
+    let message = null;
 
-	instance.options.globalToasts[name] = function (payload, initiate) {
+    if (typeof callback === "string") {
+      message = callback;
+    }
 
-		// if call back is string we will keep it that way..
-		let message = null;
+    if (typeof callback === "function") {
+      message = callback(payload);
+    }
 
-		if (typeof callback === 'string') {
-			message = callback;
-		}
+    return initiate(message, options);
+  };
 
-		if (typeof callback === 'function') {
-			message = callback(payload);
-		}
+  initiateCustomToasts(instance);
+};
 
-		return initiate(message, options);
-	};
-
-
-	initiateCustomToasts(instance);
-}
-
-export default {Toasted};
+export default { Toasted };
