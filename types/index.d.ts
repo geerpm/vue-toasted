@@ -166,7 +166,7 @@ interface Toasted {
   /**
    *
    */
-  global: [ToastRegisteredGlobal];
+  global: { [key: string]: ToastRegisteredGlobal };
 }
 
 declare class ToastedPlugin {
