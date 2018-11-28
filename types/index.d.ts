@@ -21,7 +21,7 @@ export type ToastType = "success" | "info" | "error" | "default";
 export type ToastTheme = "primary" | "outline" | "bubble";
 export type ToastIconPack = "material" | "fontawesome" | "custom-class";
 export type ToastMessageCallback = (payload: any) => string;
-export type ToastRegisteredGlobal = (payload: any) => ToastObject;
+export type ToastRegisteredGlobal = (payload?: any) => ToastObject;
 
 export interface ToastAction {
   /**
