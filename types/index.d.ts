@@ -169,6 +169,12 @@ export interface Toasted {
   global: { [key: string]: ToastRegisteredGlobal };
 }
 
+export interface RootToastOptions extends ToastOptions {
+  success?: ToastOptions;
+  info?: ToastOptions;
+  error?: ToastOptions;
+}
+
 declare class ToastedPlugin {
   static install: PluginFunction<never>;
 }
