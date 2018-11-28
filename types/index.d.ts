@@ -1,7 +1,7 @@
 import { Vue, VueConstructor } from "vue/types/vue";
 import { PluginFunction } from "vue";
 
-interface ToastObject {
+export interface ToastObject {
   // html element of the toast
   el: HTMLElement;
   // change text or html of the toast
@@ -10,20 +10,20 @@ interface ToastObject {
   goAway: (delay?: number) => any;
 }
 
-type ToastPosition =
+export type ToastPosition =
   | "top-right"
   | "top-center"
   | "top-left"
   | "bottom-right"
   | "bottom-center"
   | "bottom-left";
-type ToastType = "success" | "info" | "error" | "default";
-type ToastTheme = "primary" | "outline" | "bubble";
-type ToastIconPack = "material" | "fontawesome" | "custom-class";
-type ToastMessageCallback = (payload: any) => string;
-type ToastRegisteredGlobal = (payload: any) => ToastObject;
+export type ToastType = "success" | "info" | "error" | "default";
+export type ToastTheme = "primary" | "outline" | "bubble";
+export type ToastIconPack = "material" | "fontawesome" | "custom-class";
+export type ToastMessageCallback = (payload: any) => string;
+export type ToastRegisteredGlobal = (payload: any) => ToastObject;
 
-interface ToastAction {
+export interface ToastAction {
   /**
    * name of action
    */
@@ -54,7 +54,7 @@ interface ToastAction {
   onClick?: (e: any, toastObject: ToastObject) => any;
 }
 
-interface ToastOptions {
+export interface ToastOptions {
   /**
    * Position of the toast container (default: 'top-right')
    */
@@ -113,7 +113,7 @@ interface ToastOptions {
   iconPack?: ToastIconPack | string;
 }
 
-interface Toasted {
+export interface Toasted {
   /**
    * Show a toast with success style
    *
