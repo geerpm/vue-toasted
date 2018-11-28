@@ -21,6 +21,7 @@ type ToastType = "success" | "info" | "error" | "default";
 type ToastTheme = "primary" | "outline" | "bubble";
 type ToastIconPack = "material" | "fontawesome" | "custom-class";
 type ToastMessageCallback = (payload: any) => string;
+type ToastRegisteredGlobal = (payload: any) => ToastObject;
 
 interface ToastAction {
   /**
@@ -161,6 +162,11 @@ interface Toasted {
    * Clear all toasts
    */
   clear(): boolean;
+
+  /**
+   *
+   */
+  global: [ToastRegisteredGlobal];
 }
 
 declare class ToastedPlugin {
