@@ -9,29 +9,29 @@
   // Primary
   &.primary {
     border-radius: 2px;
-    min-height: 38px;
+    min-height: 22px;
     line-height: 1.1em;
     background-color: #353535;
-    padding: 0 20px;
+    padding: 8px 20px;
     font-size: 15px;
     font-weight: 300;
     color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 
     &.success {
-      background: #4CAF50;
+      background: #4caf50;
     }
 
     &.error {
-      background: #F44336;
+      background: #f44336;
     }
 
     &.info {
-      background: #3F51B5;
+      background: #3f51b5;
     }
 
     .action {
-      color: #a1c2fa;
+      color: #fff;
     }
   }
 
@@ -40,7 +40,7 @@
     border-radius: 30px;
     min-height: 38px;
     line-height: 1.1em;
-    background-color: #FF7043;
+    background-color: #ff7043;
     padding: 0 20px;
     font-size: 15px;
     font-weight: 300;
@@ -48,15 +48,15 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 
     &.success {
-      background: #4CAF50;
+      background: #4caf50;
     }
 
     &.error {
-      background: #F44336;
+      background: #f44336;
     }
 
     &.info {
-      background: #3F51B5;
+      background: #3f51b5;
     }
 
     .action {
@@ -77,18 +77,18 @@
     font-weight: bold;
 
     &.success {
-      color: #4CAF50;
-      border-color: #4CAF50;
+      color: #4caf50;
+      border-color: #4caf50;
     }
 
     &.error {
-      color: #F44336;
-      border-color: #F44336;
+      color: #f44336;
+      border-color: #f44336;
     }
 
     &.info {
-      color: #3F51B5;
-      border-color: #3F51B5;
+      color: #3f51b5;
+      border-color: #3f51b5;
     }
 
     .action {
